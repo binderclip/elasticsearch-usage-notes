@@ -3,6 +3,7 @@
 ## todo
 
 - [x] learning resources
-- [ ] run an es image on docker
-- [ ] es basic usage
+- [x] run an es image on docker
+- [x] es basic usage
 - [ ] use python to work with es
+- [ ] es analyzer

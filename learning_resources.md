@@ -24,3 +24,7 @@
 
 - [Elasticsearch: The Definitive Guide [2.x] | Elastic](https://www.elastic.co/guide/en/elasticsearch/guide/current/index.html)
 -  视频 [Getting Started with Elasticsearch | Elastic](https://www.elastic.co/webinars/getting-started-elasticsearch?baymax=default&elektra=docs&storm=top-video)
+
+分词
+
+- [Elasticsearch 默认分词器和中分分词器之间的比较及使用方法](https://zhuanlan.zhihu.com/p/29183128)
