@@ -1,1 +1,5 @@
-# elasticsearch_usage_notes
+# elasticsearch usage notes
+
+## todo
+
+- [ ] learning resources
