@@ -85,12 +85,13 @@ def main():
 
     # search
     s = Post.search()
+    s = s[0:1]
     s = s.filter('term', published=True).query('match', title='Hello')
     results = s.execute()
     for post in results:
         print(post.meta.score, post.title)
-    if not results:
-        print('no search results')
+
+    print(f'total: {results.hits.total}')
 
 
 if __name__ == '__main__':
