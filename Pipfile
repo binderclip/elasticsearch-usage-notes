@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 elasticsearch = "*"
+elasticsearch-dsl = "*"
 
 [dev-packages]
 
