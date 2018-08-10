@@ -132,7 +132,7 @@ def search():
     s = s.filter('term', published=True).query('match', title='Hello')
     results = s.execute()
     for post in results:
-        print(post.meta.score, post.title)
+        print(post.meta.score, post.meta.id, post.title)
     print(f'total: {results.hits.total}')
 
 
