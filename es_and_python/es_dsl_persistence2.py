@@ -119,9 +119,10 @@ def bulk_delete():
             "_op_type": "delete",
             "_index": Post._index._name,
             "_type": Post._doc_type.mapping.properties._name,
-            "_id": str(post_id)
+            "_id": str(post_id),
         })
-    errors = bulk(es_client, actions=actions)
+    errors = bulk(es_client, actions=actions, raise_on_error=False)
+    print(errors)
     return not errors
 
 
@@ -146,7 +147,7 @@ def main():
     # delete()
     # bulk_create()
     # bulk_delete()
-    search()
+    # search()
     print(Post._doc_type.mapping.properties._name)
 
 
@@ -154,3 +155,4 @@ if __name__ == '__main__':
     main()
 
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html
+# https://github.com/elastic/elasticsearch-py/issues/502
