@@ -6,4 +6,4 @@
 - [x] run an es image on docker
 - [x] es basic usage
 - [x] use python to work with es
-- [ ] es analyzer
+- [x] es analyzer basic

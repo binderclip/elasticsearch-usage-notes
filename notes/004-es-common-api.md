@@ -2,7 +2,7 @@
 
 ## list all indices
 
-```
+```shell
 curl 'http://devdb:9200/_cat/indices?v'
 ```
 
