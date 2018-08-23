@@ -9,3 +9,4 @@
 - [x] es analyzer basic
 - [ ] Elasticsearch: 权威指南
 - [ ] mapping, analyzer, search_analyzer and tokenizer
+- [ ] 自定义分词
