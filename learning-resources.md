@@ -16,6 +16,8 @@
 应用结合
 
 - [elasticsearch-py | Elastic](https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/index.html)
+  - [Python Elasticsearch Client — Elasticsearch 6.3.0 documentation](https://elasticsearch-py.readthedocs.io/en/master/)
+  - [Elasticsearch DSL — Elasticsearch DSL 6.3.0.dev documentation](https://elasticsearch-dsl.readthedocs.io/en/latest/)
 - [Python + Elasticsearch. First steps. | Tryolabs Blog](https://tryolabs.com/blog/2015/02/17/python-elasticsearch-first-steps/)
 - [Getting started with ElasticSearch-Python :: Part One](https://medium.com/the-andela-way/getting-started-with-elasticsearch-with-python-be8a5727c05f)
 - [Getting started with ElasticSearch-Python :: Part Two](https://medium.com/the-andela-way/getting-started-with-elasticsearch-python-part-two-1c0c9d1117ea)

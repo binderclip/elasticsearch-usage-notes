@@ -7,6 +7,6 @@
 - [x] es basic usage
 - [x] use python to work with es
 - [x] es analyzer basic
-- [ ] Elasticsearch: 权威指南
+- [x] Elasticsearch: 权威指南，简单翻一遍
 - [ ] mapping, analyzer, search_analyzer and tokenizer
 - [ ] 自定义分词
