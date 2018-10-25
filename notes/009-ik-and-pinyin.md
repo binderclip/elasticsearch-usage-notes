@@ -55,6 +55,8 @@ $ curl -X POST 'http://localhost:9200/_analyze?pretty' -d \
 }
 ```
 
+// 这里会发现按照现在的配置索引出来的是单个字的拼音，以及一个全部自己的全部拼音首字母
+
 ### 创建索引
 
 ```shell
@@ -185,6 +187,203 @@ $ curl -XPOST "localhost:9200/ikpy/test_mapping/_search?pretty"  -H "Content-Typ
   }
 }
 ```
+
+## 测试 ik + pinyin
+
+主要思路是用 ik 来分词，然后再用 pinyin 做一次 filter。
+
+参考[Elasticsearch 5 Ik+pinyin分词配置详解 - 1.01^365=37.78 (Lucene、ES、ELK开发交流群: 370734940) - CSDN博客](https://blog.csdn.net/napoay/article/details/53907921)
+
+### 创建索引与分析器设置
+
+```shell
+curl -XPUT "localhost:9200/ikpy2/" -d'
+{
+    "index": {
+        "analysis": {
+            "analyzer": {
+                "ik_pinyin_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "ik_smart",
+                    "filter": ["my_pinyin", "word_delimiter"]
+                }
+            },
+            "filter": {
+                "my_pinyin": {
+                    "type": "pinyin",
+                    "first_letter": "prefix",
+                    "padding_char": " "
+                }
+            }
+        }
+    }
+}'
+```
+
+创建一个 type 并设置 mapping：
+
+```shell
+curl -XPOST http://localhost:9200/ikpy2/folks/_mapping -d'
+{
+    "folks": {
+        "properties": {
+            "name": {
+                "type": "keyword",
+                "fields": {
+                    "pinyin": {
+                        "type": "text",
+                        "store": "no",
+                        "term_vector": "with_positions_offsets",
+                        "analyzer": "ik_pinyin_analyzer",
+                        "boost": 10
+                    }
+                }
+            }
+        }
+    }
+}'
+```
+
+### 索引测试文档
+
+```shell
+curl -XPOST http://localhost:9200/ikpy2/folks/andy -d'{"name":"刘德华"}'
+curl -XPOST http://localhost:9200/ikpy2/folks/tina -d'{"name":"中华人民共和国国歌"}'
+```
+
+### 测试(1)拼音分词
+
+```shell
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=name.pinyin:liu"
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=name.pinyin:de"
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=name.pinyin:hua"
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=name.pinyin:ldh"
+# 上面的可以搜索到
+
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=name.pinyin:liudehua"
+# 会被切开再按单个的搜索
+
+curl -XPOST "http://localhost:9200/ikpy2/folks/_search?q=刘德华"
+# 无结果
+```
+
+### 测试(2) IK 分词测试
+
+```shell
+curl -XPOST "http://localhost:9200/ikpy2/_search?pretty" -d'
+{
+  "query": {
+    "match": {
+      "name.pinyin": "国歌"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "name.pinyin": {}
+    }
+  }
+}'
+```
+
+```shell
+{
+  "took" : 77,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 1,
+    "max_score" : 9.507006,
+    "hits" : [
+      {
+        "_index" : "ikpy2",
+        "_type" : "folks",
+        "_id" : "tina",
+        "_score" : 9.507006,
+        "_source" : {
+          "name" : "中华人民共和国国歌"
+        },
+        "highlight" : {
+          "name.pinyin" : [
+            "<em>中华人民共和国</em><em>国歌</em>"
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+### 测试(4) pinyin+ik 分词测试
+
+```shell
+curl -XPOST "http://localhost:9200/ikpy2/_search?pretty" -d'
+{
+  "query": {
+    "match": {
+      "name.pinyin": "zhonghua"
+    }
+  },
+  "highlight": {
+    "fields": {
+      "name.pinyin": {}
+    }
+  }
+}'
+```
+
+```shell
+{
+  "took" : 18,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 5,
+    "successful" : 5,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : 2,
+    "max_score" : 6.188843,
+    "hits" : [
+      {
+        "_index" : "ikpy2",
+        "_type" : "folks",
+        "_id" : "tina",
+        "_score" : 6.188843,
+        "_source" : {
+          "name" : "中华人民共和国国歌"
+        },
+        "highlight" : {
+          "name.pinyin" : [
+            "<em>中华人民共和国</em>国歌"
+          ]
+        }
+      },
+      {
+        "_index" : "ikpy2",
+        "_type" : "folks",
+        "_id" : "andy",
+        "_score" : 0.22534128,
+        "_source" : {
+          "name" : "刘德华"
+        },
+        "highlight" : {
+          "name.pinyin" : [
+            "<em>刘德华</em>"
+          ]
+        }
+      }
+    ]
+  }
+}
+```
+
+使用 pinyin 分词以后，原始的字段搜索要加上 `.pinyin` 后缀，搜索原始字段没有返回结果
 
 ## refs
 
