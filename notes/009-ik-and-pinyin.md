@@ -383,6 +383,53 @@ curl -XPOST "http://localhost:9200/ikpy2/_search?pretty" -d'
 }
 ```
 
+```shell
+$ curl -X POST 'http://localhost:9200/ikpy2/_analyze?pretty' -d \
+'{
+  "analyzer": "ik_pinyin_analyzer",
+  "text": "大西瓜"
+}'
+{
+  "tokens" : [
+    {
+      "token" : "da",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "CN_CHAR",
+      "position" : 0
+    },
+    {
+      "token" : "d",
+      "start_offset" : 0,
+      "end_offset" : 1,
+      "type" : "CN_CHAR",
+      "position" : 0
+    },
+    {
+      "token" : "xi",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 1
+    },
+    {
+      "token" : "gua",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 2
+    },
+    {
+      "token" : "xg",
+      "start_offset" : 1,
+      "end_offset" : 3,
+      "type" : "CN_WORD",
+      "position" : 2
+    }
+  ]
+}
+```
+
 使用 pinyin 分词以后，原始的字段搜索要加上 `.pinyin` 后缀，搜索原始字段没有返回结果
 
 ## refs
