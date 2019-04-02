@@ -22,6 +22,15 @@ DEFAULT_INDEX_SETTING = {
 }
 
 
+def chunks(l, n):
+    """ Yield successive n-sized chunks from l. """
+    if not l:
+        yield []
+        return
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
 class IndexMixin:
     """一些用到的 index 的操作，dsl 的 index 没有实现的功能，简单封装一下"""
 
@@ -60,6 +69,7 @@ class IndexMixin:
     def _create_index(cls, index_name):
         new_index = Index(index_name, using=CONNECTION_ALIAS)
         new_index.delete(ignore=[400, 404])
+        new_index.settings(index=DEFAULT_INDEX_SETTING)
         new_index.create()
         return new_index
 
@@ -85,7 +95,8 @@ class IndexMixin:
                 d = doc.to_dict(include_meta=True)
                 d['_index'] = new_name
                 actions.append(d)
-            bulk(es_client, actions)
+            for _actions in chunks(actions, 20):
+                bulk(es_client, _actions)
 
         old_names = cls._get_index_names_by_alias(alias)
         if old_names:
