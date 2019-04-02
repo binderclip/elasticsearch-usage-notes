@@ -1,5 +1,19 @@
 # index alias
 
+## 查询 alias
+
+检测 alias 的指向
+
+```shell
+curl 'http://localhost:9200/*/_alias/movie4'
+```
+
+检测 index 的被指向
+
+```shell
+curl 'http://localhost:9200/movie4_20190401_232050/_alias/*'     
+```
+
 ## 为了支持 alias 代码中需要作出的操作
 
 ## 如果已经直接设置了 index 但又想用上 alias
