@@ -32,3 +32,7 @@
 分词
 
 - [Elasticsearch 默认分词器和中分分词器之间的比较及使用方法](https://zhuanlan.zhihu.com/p/29183128)
+
+cheat sheet
+
+- [Elasticsearch Cheat Sheet for developers](http://elasticsearch-cheatsheet.jolicode.com/)
