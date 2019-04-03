@@ -71,6 +71,7 @@ class IndexMixin:
         new_index.delete(ignore=[400, 404])
         new_index.settings(index=DEFAULT_INDEX_SETTING)
         new_index.create()
+        cls.init(index=index_name)
         return new_index
 
     @classmethod
